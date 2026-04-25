@@ -98,10 +98,13 @@ def main():
         input("Aguardando ENTER...")
         
         # 1. Pega o número que o usuário digitou e o resultado na tela
+        num_atual: int =  1011000
         try:
-            num_atual = int(driver.find_element(By.ID, ID_INPUT).get_attribute("value"))
+            valor = driver.find_element(By.ID, ID_INPUT).get_attribute("value")
+            if valor:
+                num_atual = int(valor)
         except:
-            num_atual = 991999
+            pass
             
         print(f"Salvando primeiro resultado ({num_atual})...")
         dados_pri = extrair_resultado(driver)
@@ -110,7 +113,7 @@ def main():
         consultas_feitas = 1
         
         # 2. Inicia o loop para os próximos números respeitando o limite
-        for n in range(num_atual + 1, 992550):
+        for n in range(int(num_atual) + 1, 1016000 ):
             if consultas_feitas >= limite:
                 print(f"\nMeta de {limite} consultas atingida! Finalizando...")
                 break
