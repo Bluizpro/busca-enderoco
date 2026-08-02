@@ -1,5 +1,65 @@
-2026/08/02-16:54:04.438 3fde71 Reusing MANIFEST /home/bluiz/Documentos/consulta/resultado/perfil_chrome/Default/Local Storage/leveldb/MANIFEST-000001
-2026/08/02-16:54:04.446 3fde71 Recovering log #1509
-2026/08/02-16:54:04.446 3fde71 Level-0 table #1512: started
-2026/08/02-16:54:04.449 3fde71 Level-0 table #1512: 68094 bytes OK
-2026/08/02-16:54:04.451 3fde71 Delete type=0 #1509
+2026/08/02-16:58:54.868 3ffbd3 Reusing MANIFEST /home/bluiz/Documentos/consulta/resultado/perfil_chrome/Default/Local Storage/leveldb/MANIFEST-000001
+2026/08/02-16:58:54.881 3ffbd3 Recovering log #1513
+2026/08/02-16:58:54.882 3ffbd3 Level-0 table #1515: started
+2026/08/02-16:58:54.901 3ffbd3 Level-0 table #1515: 71332 bytes OK
+2026/08/02-16:58:54.913 3ffbd3 Delete type=0 #1513
+2026/08/02-17:00:56.911 3ffbd3 Level-0 table #1518: started
+2026/08/02-17:00:56.915 3ffbd3 Level-0 table #1518: 75514 bytes OK
+2026/08/02-17:00:56.919 3ffbd3 Delete type=0 #1516
+2026/08/02-17:00:56.919 3ffbd8 Compacting 4@0 + 1@1 files
+2026/08/02-17:00:56.925 3ffbd8 Generated table #1519@0: 43 keys, 36191 bytes
+2026/08/02-17:00:56.925 3ffbd8 Compacted 4@0 + 1@1 files => 36191 bytes
+2026/08/02-17:00:56.927 3ffbd8 compacted to: files[ 0 1 1 0 0 0 0 ]
+2026/08/02-17:00:56.928 3ffbd8 Delete type=2 #1508
+2026/08/02-17:00:56.928 3ffbd8 Delete type=2 #1515
+2026/08/02-17:00:56.928 3ffbd8 Delete type=2 #1512
+2026/08/02-17:00:56.928 3ffbd8 Delete type=2 #1510
+2026/08/02-17:00:56.928 3ffbd8 Delete type=2 #1518
+2026/08/02-17:02:56.910 3ffbd8 Level-0 table #1521: started
+2026/08/02-17:02:56.921 3ffbd8 Level-0 table #1521: 49519 bytes OK
+2026/08/02-17:02:56.923 3ffbd8 Delete type=0 #1517
+2026/08/02-17:05:56.911 3ffbd8 Level-0 table #1523: started
+2026/08/02-17:05:56.927 3ffbd8 Level-0 table #1523: 96843 bytes OK
+2026/08/02-17:05:56.931 3ffbd8 Delete type=0 #1520
+2026/08/02-17:06:56.910 3ffbd8 Level-0 table #1525: started
+2026/08/02-17:06:56.921 3ffbd8 Level-0 table #1525: 48795 bytes OK
+2026/08/02-17:06:56.923 3ffbd8 Delete type=0 #1522
+2026/08/02-17:08:56.910 3ffbd8 Level-0 table #1527: started
+2026/08/02-17:08:56.924 3ffbd8 Level-0 table #1527: 74647 bytes OK
+2026/08/02-17:08:56.929 3ffbd8 Delete type=0 #1524
+2026/08/02-17:08:56.930 3ffbd8 Compacting 4@0 + 1@1 files
+2026/08/02-17:08:56.939 3ffbd8 Generated table #1528@0: 43 keys, 44516 bytes
+2026/08/02-17:08:56.939 3ffbd8 Compacted 4@0 + 1@1 files => 44516 bytes
+2026/08/02-17:08:56.942 3ffbd8 compacted to: files[ 0 1 1 0 0 0 0 ]
+2026/08/02-17:08:56.944 3ffbd8 Delete type=2 #1523
+2026/08/02-17:08:56.944 3ffbd8 Delete type=2 #1527
+2026/08/02-17:08:56.944 3ffbd8 Delete type=2 #1519
+2026/08/02-17:08:56.945 3ffbd8 Delete type=2 #1525
+2026/08/02-17:08:56.945 3ffbd8 Delete type=2 #1521
+2026/08/02-17:11:56.910 3ffbd8 Level-0 table #1530: started
+2026/08/02-17:11:56.921 3ffbd8 Level-0 table #1530: 84517 bytes OK
+2026/08/02-17:11:56.923 3ffbd8 Delete type=0 #1526
+2026/08/02-17:13:56.910 3ffbd8 Level-0 table #1532: started
+2026/08/02-17:13:56.922 3ffbd8 Level-0 table #1532: 96670 bytes OK
+2026/08/02-17:13:56.924 3ffbd8 Delete type=0 #1529
+2026/08/02-17:15:56.914 3ffbd8 Level-0 table #1534: started
+2026/08/02-17:15:56.926 3ffbd8 Level-0 table #1534: 66599 bytes OK
+2026/08/02-17:15:56.928 3ffbd8 Delete type=0 #1531
+2026/08/02-17:18:04.175 3ffbd8 Level-0 table #1536: started
+2026/08/02-17:18:04.189 3ffbd8 Level-0 table #1536: 72126 bytes OK
+2026/08/02-17:18:04.195 3ffbd8 Delete type=0 #1533
+2026/08/02-17:18:04.196 3ffbd8 Compacting 4@0 + 1@1 files
+2026/08/02-17:18:04.203 3ffbd8 Generated table #1537@0: 43 keys, 25658 bytes
+2026/08/02-17:18:04.203 3ffbd8 Compacted 4@0 + 1@1 files => 25658 bytes
+2026/08/02-17:18:04.206 3ffbd8 compacted to: files[ 0 1 1 0 0 0 0 ]
+2026/08/02-17:18:04.209 3ffbd8 Delete type=2 #1536
+2026/08/02-17:18:04.209 3ffbd8 Delete type=2 #1530
+2026/08/02-17:18:04.209 3ffbd8 Delete type=2 #1534
+2026/08/02-17:18:04.210 3ffbd8 Delete type=2 #1528
+2026/08/02-17:18:04.210 3ffbd8 Delete type=2 #1532
+2026/08/02-17:19:56.910 3ffbd8 Level-0 table #1539: started
+2026/08/02-17:19:56.921 3ffbd8 Level-0 table #1539: 62772 bytes OK
+2026/08/02-17:19:56.923 3ffbd8 Delete type=0 #1535
+2026/08/02-17:22:56.921 3ffbd3 Level-0 table #1541: started
+2026/08/02-17:22:56.930 3ffbd3 Level-0 table #1541: 61066 bytes OK
+2026/08/02-17:22:56.935 3ffbd3 Delete type=0 #1538
