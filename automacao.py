@@ -157,6 +157,7 @@ ID_BOTAO   = "btnPesquisar"
 EXCEL_FILE      = "resultado/resultados.xlsx"
 EXCEL_SAIDA     = "resultado/resultados_com_telefone.xlsx"
 SESSAO_FILE     = "resultado/sessao.json"
+SESSAO_TEL_FILE = "resultado/sessao_telefones.json"
 
 # Perfil DEDICADO da automação (pasta própria, separada do seu Chrome pessoal).
 # É persistente: cookies/login ficam salvos entre execuções, então o bloqueio
@@ -580,7 +581,49 @@ def processar_telefones():
         print("[Google] Todos os endereços já possuem telefone — nada a fazer.")
         return
 
-    print(f"\n[Google] Buscando telefones de {len(pendentes)} endereços...")
+    total_lote = len(pendentes)          # quantos faltavam nesta execução
+    ja_feitos  = len(processados)        # quantos já existiam de execuções anteriores
+    total_geral = ja_feitos + total_lote # total de registros da entrada
+
+    # ── Sessão anterior: pergunta se retoma, igual ao fluxo de endereços ──────
+    sessao = carregar_sessao_tel()
+    buscas_feitas = 0
+    limite = None
+    # Só oferece retomar se a meta anterior ficou pela metade; se já tinha sido
+    # concluída, não há o que continuar — parte direto para uma meta nova.
+    if sessao and sessao.get("buscas_feitas", 0) >= sessao.get("limite", 0):
+        print(f"\n[Google] A sessão anterior concluiu a meta de {sessao['limite']} buscas.")
+        limpar_sessao_tel()
+        sessao = None
+
+    if sessao:
+        print("\n╔══════════════════════════════════════════════════╗")
+        print("║  Sessão de telefones anterior encontrada!        ║")
+        print(f"║  Último número: {sessao['ultimo_numero']}  |  "
+              f"Feitas: {sessao['buscas_feitas']}/{sessao['limite']}  ║")
+        print("╚══════════════════════════════════════════════════╝")
+        resp = input("Deseja continuar de onde parou? (s/n): ").strip().lower()
+        if resp == "s":
+            buscas_feitas = sessao["buscas_feitas"]
+            limite = sessao["limite"]
+            print(f"\n[Retomando] {buscas_feitas}/{limite} buscas já realizadas. "
+                  f"Faltam {max(0, limite - buscas_feitas)} para a meta.")
+        else:
+            limpar_sessao_tel()
+
+    if limite is None:
+        print(f"\n[Configuração] Há {total_lote} endereços sem telefone.")
+        print("Quantos deseja buscar agora? (ENTER = todos)")
+        entrada = input(f"Digite a quantidade (ex: 150) [todos = {total_lote}]: ").strip()
+        try:
+            limite = int(entrada) if entrada else total_lote
+        except ValueError:
+            print(f"[Google] Valor inválido — usando todos ({total_lote}).")
+            limite = total_lote
+        limite = max(1, min(limite, total_lote))
+
+    print(f"\n[Google] Buscando telefones — meta de {limite} nesta sessão "
+          f"({total_lote} pendentes no total).")
     print("[Google] Usando um perfil dedicado da automação (seu Chrome pessoal pode ficar aberto).")
 
     try:
@@ -589,29 +632,31 @@ def processar_telefones():
         print(f"[Google] Não foi possível abrir o Chrome: {e}")
         return
 
-    total_lote = len(pendentes)          # quantos faltavam nesta execução
-    ja_feitos  = len(processados)        # quantos já existiam de execuções anteriores
-    total_geral = ja_feitos + total_lote # total de registros da entrada
-
     # Permite pausar/retomar a busca de telefones com ENTER, igual ao fluxo de
     # endereços. Como cada item é salvo em disco na hora, pausar e até fechar o
     # programa é seguro: a próxima execução retoma de onde parou.
     iniciar_controle_pausa()
 
+    numero = None  # último número tocado; usado no resumo final
     try:
         for i, row in enumerate(pendentes, start=1):
             # Ponto de pausa: só interrompe entre um contato e outro, nunca no
             # meio de uma busca já iniciada.
             checar_pausa()
 
+            if buscas_feitas >= limite:
+                print(f"\n[Google] Meta de {limite} buscas atingida! Finalizando...")
+                break
+
             numero = row.get("numero")
             item = row.to_dict()
 
-            # Contador de progresso: mostra a posição no lote, o total geral e
-            # o NÚMERO atual — assim você sabe exatamente até onde a busca chegou,
-            # mesmo se o processo for interrompido.
+            # Contador de progresso: mostra o andamento da meta, a posição no
+            # total geral e o NÚMERO atual — assim você sabe exatamente até onde
+            # a busca chegou, mesmo se o processo for interrompido.
             posicao_geral = ja_feitos + i
-            print(f"\n[Progresso] {i}/{total_lote} deste lote | {posicao_geral}/{total_geral} no total | número atual: {numero}")
+            print(f"\n[Progresso] {buscas_feitas + 1}/{limite} da meta | "
+                  f"{posicao_geral}/{total_geral} no total | número atual: {numero}")
 
             # Endereço inválido/ausente: marca e segue sem consultar o Google
             if _limpar(row.get("Logradouro", "")) == "":
@@ -619,6 +664,8 @@ def processar_telefones():
                 df_saida = pd.concat([df_saida, pd.DataFrame([item])], ignore_index=True)
                 processados.add(numero)
                 salvar_saida(df_saida)
+                buscas_feitas += 1
+                salvar_sessao_tel(numero, buscas_feitas, limite)
                 continue
 
             query = montar_query(item)
@@ -638,9 +685,19 @@ def processar_telefones():
             df_saida = pd.concat([df_saida, pd.DataFrame([item])], ignore_index=True)
             processados.add(numero)
             salvar_saida(df_saida)  # salva a cada item para garantir persistência
+            buscas_feitas += 1
+            # Grava o contador da meta a cada item: se o programa cair aqui, a
+            # próxima execução oferece retomar exatamente deste ponto.
+            salvar_sessao_tel(numero, buscas_feitas, limite)
             aguardar_sem_pausa(random.randint(4, 9))
 
-        print(f"\n[Google] Concluído — total processado: {len(processados)}/{total_geral} registros. Último número: {numero}")
+        print(f"\n[Google] Concluído — {buscas_feitas}/{limite} buscas nesta sessão | "
+              f"{len(processados)}/{total_geral} registros no total. Último número: {numero}")
+
+        # Nada mais pendente: a meta perdeu o sentido, começa limpo da próxima vez.
+        if len(processados) >= total_geral:
+            limpar_sessao_tel()
+            print("[Google] Todos os endereços já têm telefone — sessão encerrada.")
     except Exception as e:
         print(f"[Google] Erro na busca de telefones: {e}")
     finally:
@@ -713,6 +770,30 @@ def carregar_sessao():
 def limpar_sessao():
     if os.path.exists(SESSAO_FILE):
         os.remove(SESSAO_FILE)
+
+# ── Sessão da busca de telefones (mesmo esquema do fluxo 1) ───────────────────
+# Quais registros já foram feitos vem do próprio resultados_com_telefone.xlsx;
+# a sessão guarda o CONTADOR do lote (buscas feitas / limite do dia) para que
+# uma queda no meio não zere o progresso da meta.
+
+def salvar_sessao_tel(ultimo_numero, buscas_feitas, limite):
+    with open(SESSAO_TEL_FILE, "w") as f:
+        json.dump({"ultimo_numero": ultimo_numero,
+                   "buscas_feitas": buscas_feitas,
+                   "limite": limite}, f)
+
+def carregar_sessao_tel():
+    if not os.path.exists(SESSAO_TEL_FILE):
+        return None
+    try:
+        with open(SESSAO_TEL_FILE, "r") as f:
+            return json.load(f)
+    except Exception:
+        return None
+
+def limpar_sessao_tel():
+    if os.path.exists(SESSAO_TEL_FILE):
+        os.remove(SESSAO_TEL_FILE)
 
 def aguardar_sem_pausa(segundos):
     """Substitui time.sleep respeitando o pause_event em fatias de 1s."""
